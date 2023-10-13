@@ -2,7 +2,7 @@ import pygame
 from pygame.sprite import AbstractGroup
 pygame.init() 
 
-#2D vectors
+#2D vectors (prova)
 vector = pygame.math.Vector2
 
 #Display surface
