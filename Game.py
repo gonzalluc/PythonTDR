@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 from pygame.sprite import AbstractGroup
 pygame.init() 
 
@@ -17,6 +17,7 @@ clock = pygame.time.Clock()
 
 looking_left = True
 launching_attack = False
+random_number = random.randint(1,1000)
 
 #Clases
 
@@ -835,7 +836,7 @@ portal_group = pygame.sprite.Group()
 #Create the tile map: 0 -> no tile, 1 -> ground, 2 -> groundleft, 3 -> groundright
 #20 rows and 30 columns
 tile_map = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 0, 0, 0, 0, 0, 0],
@@ -845,7 +846,7 @@ tile_map = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 0, 0, 0],
-    [0, 0, 0, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 0, 0, 0],
+    [0, 13, 0, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 0, 14, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -887,9 +888,6 @@ for i in range(len(tile_map)):
         elif tile_map[i][j] == 10:
             my_skeleton = Skeleton(j*24,i*24 + 24, ground_tile_group)
             enemies_group.add(my_skeleton)
-        elif tile_map[i][j] == 11:
-            my_portal = Portal(j*24,i*24 + 24)
-            portal_group.add(my_portal)
 
 
 #Load in a background image
@@ -918,7 +916,6 @@ while running:
 #Draw tiles
     main_tile_group.draw(display_surface)
     main_tile_group.update()
-    
 #Update and draw sprites
     my_player_group.update()
     my_player_group.draw(display_surface)
@@ -926,6 +923,50 @@ while running:
     enemies_group.draw(display_surface)
     portal_group.update()
     portal_group.draw(display_surface)
+
+#Check portals
+    for i in range(len(tile_map)):
+        for j in range(len(tile_map[i])):
+            if tile_map[i][j] == 11:
+               if random.randint(1,1000) == random_number:
+                  my_portal = Portal(j*24,i*24 + 24)
+                  portal_group.add(my_portal)
+                  if random.randint(1,2) == random.randint(1,2):
+                     my_goblin = Goblin(-20, 109, ground_tile_group)
+                     enemies_group.add(my_goblin)
+                  else:
+                     my_eye = Eye(-20, 109, ground_tile_group)
+                     enemies_group.add(my_eye)
+            
+            elif tile_map[i][j] == 12:
+               if random.randint(1,1000) == random_number:
+                  my_portal = Portal(j*24,i*24 + 24)
+                  portal_group.add(my_portal)
+                  if random.randint(1,2) == random.randint(1,2):
+                     my_goblin = Goblin(650, 355, ground_tile_group)
+                     enemies_group.add(my_goblin)
+                  else:
+                     my_eye = Eye(650, 355, ground_tile_group)
+                     enemies_group.add(my_eye)
+
+
+            elif tile_map[i][j] == 13:
+               if random.randint(1,1000) == random_number:
+                  my_portal = Portal(j*24,i*24 + 24)
+                  portal_group.add(my_portal)
+                  if random.randint(1,2) == random.randint(1,2):
+                     my_goblin = Goblin(-60, 337, ground_tile_group)
+                     enemies_group.add(my_goblin)
+                  else:
+                     my_eye = Eye(-60, 337, ground_tile_group)
+                     enemies_group.add(my_eye)
+
+
+    if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x = event.pos[0]
+            mouse_y = event.pos[1]
+            print(mouse_x, mouse_y)
+
   
 #Tick the clock
     pygame.display.update()
