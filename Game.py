@@ -18,6 +18,7 @@ clock = pygame.time.Clock()
 looking_left = True
 launching_attack = False
 random_number = random.randint(1,1000)
+Enemies = 0
 
 #Clases
 
@@ -442,6 +443,8 @@ class Eye(pygame.sprite.Sprite):
             if self.dead:
                 self.kill()
                 self.dead = False
+                Enemies = Enemies - 1
+                
 
         self.image = sprite_list[int(self.current_sprite)]
     
@@ -575,6 +578,7 @@ class Goblin(pygame.sprite.Sprite):
             if self.dead:
                 self.kill()
                 self.dead = False
+                Enemies = Enemies - 1
 
         self.image = sprite_list[int(self.current_sprite)]
 
@@ -723,6 +727,7 @@ class Skeleton(pygame.sprite.Sprite):
             if self.dead:
                 self.kill()
                 self.dead = False
+                Enemies = Enemies - 1
             if self.shield:
                 self.shield = False
 
@@ -928,38 +933,46 @@ while running:
     for i in range(len(tile_map)):
         for j in range(len(tile_map[i])):
             if tile_map[i][j] == 11:
-               if random.randint(1,1000) == random_number:
+               if random.randint(1,1000) == random_number and Enemies < 10:
                   my_portal = Portal(j*24,i*24 + 24)
                   portal_group.add(my_portal)
                   if random.randint(1,2) == random.randint(1,2):
-                     my_goblin = Goblin(-20, 109, ground_tile_group)
-                     enemies_group.add(my_goblin)
-                  else:
                      my_eye = Eye(-20, 109, ground_tile_group)
                      enemies_group.add(my_eye)
+                     Enemies +=1
+                  else:
+                     my_goblin = Goblin(-20, 109, ground_tile_group)
+                     enemies_group.add(my_goblin)
+                     Enemies +=1
             
             elif tile_map[i][j] == 12:
-               if random.randint(1,1000) == random_number:
+               if random.randint(1,1000) == random_number and Enemies < 10:
                   my_portal = Portal(j*24,i*24 + 24)
                   portal_group.add(my_portal)
-                  if random.randint(1,2) == random.randint(1,2):
-                     my_goblin = Goblin(650, 355, ground_tile_group)
-                     enemies_group.add(my_goblin)
-                  else:
-                     my_eye = Eye(650, 355, ground_tile_group)
-                     enemies_group.add(my_eye)
-
+                  my_skeleton = Skeleton(650, 108, ground_tile_group)
+                  enemies_group.add(my_skeleton)
+                  Enemies +=1
 
             elif tile_map[i][j] == 13:
-               if random.randint(1,1000) == random_number:
+               if random.randint(1,1000) == random_number and Enemies < 10:
+                  my_portal = Portal(j*24,i*24 + 24)
+                  portal_group.add(my_portal)
+                  my_goblin = Goblin(-60, 337, ground_tile_group)
+                  enemies_group.add(my_goblin)
+                  Enemies +=1
+
+            elif tile_map[i][j] == 14:
+               if random.randint(1,1000) == random_number and Enemies < 10:
                   my_portal = Portal(j*24,i*24 + 24)
                   portal_group.add(my_portal)
                   if random.randint(1,2) == random.randint(1,2):
-                     my_goblin = Goblin(-60, 337, ground_tile_group)
-                     enemies_group.add(my_goblin)
-                  else:
-                     my_eye = Eye(-60, 337, ground_tile_group)
+                     my_eye = Eye(650, 337, ground_tile_group)
                      enemies_group.add(my_eye)
+                     Enemies +=1
+                  else:
+                     my_skeleton = Skeleton(650, 337, ground_tile_group)
+                     enemies_group.add(my_skeleton)
+                     Enemies +=1
 
 
     if event.type == pygame.MOUSEBUTTONDOWN:
