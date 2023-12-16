@@ -264,7 +264,7 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 my_player.fire()
-    
+
     display_surface.fill((0,0,0))
 
     my_player_group.update()

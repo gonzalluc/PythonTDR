@@ -9,7 +9,7 @@ vector = pygame.math.Vector2
 WINDOW_WIDTH = 720
 WINDOW_HEIGHT = 480
 display_surface = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
-pygame.display.set_caption("Beta 1")
+pygame.display.set_caption("Monster Slayer")
 
 #FPS AND CLOCK
 FPS = 60
@@ -19,6 +19,38 @@ looking_left = True
 launching_attack = False
 random_number = random.randint(1,1000)
 Enemies = 0
+Points = 0
+Lifes = 20
+Game_Started = False
+
+#Define fonts
+system_font = pygame.font.Font("Graphics/Knight_Game/Fonts/Pixels.ttf", 20)
+subtext_font = pygame.font.Font("Graphics/Knight_Game/Fonts/Pixels.ttf", 30)
+GameOver_font = pygame.font.Font("Graphics/Knight_Game/Fonts/BleedingPixels.ttf", 70)
+#Definte text
+lifes_text = system_font.render("Lifes: " + str(Lifes), True,(255,255,255))
+lifes_text_rect = lifes_text.get_rect()
+lifes_text_rect.center = (35,20)
+
+points_text = system_font.render("Ponts:" + str(Points), True,(255,255,255))
+points_text_rect = lifes_text.get_rect()
+points_text_rect.center = (35, 50)
+
+GameOver_text = GameOver_font.render("GAME OVER", True,(255,0,0))
+Gameover_text_rect = GameOver_text.get_rect()
+Gameover_text_rect.center = (360, 240)
+
+sub_text = subtext_font.render("Press spacebar to continue", True,(255,0,0))
+sub_text_rect = sub_text.get_rect()
+sub_text_rect.center = (360, 320)
+
+title_text = GameOver_font.render("MONSTER SLAYER", True,(255, 0, 0))
+title_text_rect = title_text.get_rect()
+title_text_rect.center = (360, 240)
+
+sub_text2 = subtext_font.render("Press spacebar to begin", True,(255, 0, 0))
+sub_text2_rect = sub_text2.get_rect()
+sub_text2_rect.center = (360, 320)
 
 #Clases
 
@@ -54,9 +86,6 @@ class Tile(pygame.sprite.Sprite):
         #Get the rect of the image and position within the grid
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
-
-    def update(self):
-        pygame.draw.rect(display_surface,(0,0,255), self.rect, 1)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, ground_tiles):
@@ -217,8 +246,8 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
         #Draw the mask
-        mask_outline = self.mask.outline()
-        pygame.draw.lines(self.image,(255,255,0), True, mask_outline)
+        #mask_outline = self.mask.outline()
+        #pygame.draw.lines(self.image,(255,255,0), True, mask_outline)
 
 
         #self.animate_attack()
@@ -254,6 +283,8 @@ class Player(pygame.sprite.Sprite):
                 self.rolling = False
             if self.gothit:
                 self.gothit = False
+                global Lifes
+                Lifes -= 1
 
         self.image = sprite_list[int(self.current_sprite)]
 
@@ -406,7 +437,7 @@ class Eye(pygame.sprite.Sprite):
         self.position = vector(x, y)
         self.velocity = vector(0, 0)
         self.gothit = False
-        self.lifes = 2
+        self.lifes = 1
         self.dead = False
         self.attacking = False
 
@@ -415,8 +446,8 @@ class Eye(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
         #Draw the mask
-        mask_outline = self.mask.outline()
-        pygame.draw.lines(self.image,(0,0,255), True, mask_outline)
+        #mask_outline = self.mask.outline()
+        #pygame.draw.lines(self.image,(0,0,255), True, mask_outline)
 
         self.run()
         self.hit()
@@ -443,7 +474,10 @@ class Eye(pygame.sprite.Sprite):
             if self.dead:
                 self.kill()
                 self.dead = False
-                Enemies = Enemies - 1
+                global Points
+                global Enemies 
+                Points += 100
+                Enemies -= 1
                 
 
         self.image = sprite_list[int(self.current_sprite)]
@@ -542,7 +576,7 @@ class Goblin(pygame.sprite.Sprite):
         self.position = vector(x, y)
         self.velocity = vector(0, 0)
         self.gothit = False
-        self.lifes = 2
+        self.lifes = 0.6
         self.dead = False
     
     def update(self):
@@ -550,8 +584,8 @@ class Goblin(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
         #Draw the mask
-        mask_outline = self.mask.outline()
-        pygame.draw.lines(self.image,(255,0,0), True, mask_outline)
+        #mask_outline = self.mask.outline()
+        #pygame.draw.lines(self.image,(255,0,0), True, mask_outline)
 
         self.run()
         self.collisions()
@@ -578,7 +612,10 @@ class Goblin(pygame.sprite.Sprite):
             if self.dead:
                 self.kill()
                 self.dead = False
-                Enemies = Enemies - 1
+                global Points
+                global Enemies 
+                Points += 50
+                Enemies -= 1
 
         self.image = sprite_list[int(self.current_sprite)]
 
@@ -690,15 +727,15 @@ class Skeleton(pygame.sprite.Sprite):
         self.lifes = 2
         self.dead = False
         self.attacking = False
-        self.shield = False
+        self.shield = False 
         
     def update(self):
         #Create a mask
         self.mask = pygame.mask.from_surface(self.image)
 
         #Draw the mask
-        mask_outline = self.mask.outline()
-        pygame.draw.lines(self.image,(0,255,0), True, mask_outline)
+        #mask_outline = self.mask.outline()
+        #pygame.draw.lines(self.image,(0,255,0), True, mask_outline)
 
         self.run()
         self.collisions()
@@ -727,7 +764,10 @@ class Skeleton(pygame.sprite.Sprite):
             if self.dead:
                 self.kill()
                 self.dead = False
-                Enemies = Enemies - 1
+                global Points 
+                global Enemies
+                Points += 150
+                Enemies -= 1
             if self.shield:
                 self.shield = False
 
@@ -838,7 +878,8 @@ my_player_group = pygame.sprite.Group()
 enemies_group = pygame.sprite.Group()
 portal_group = pygame.sprite.Group()
 
-#Create the tile map: 0 -> no tile, 1 -> ground, 2 -> groundleft, 3 -> groundright
+#Create the tile map: 0 -> no tile, 1 -> ground, 2 -> groundleft, 3 -> groundright, 4 -> grounddownleft, 
+# 5 -> grounddownmiddle, 6 -> downright
 #20 rows and 30 columns
 tile_map = [
     [0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0],
@@ -918,6 +959,12 @@ while running:
  #Blit the background
     display_surface.blit(background_image, background_rect)
 
+#Blit text
+    lifes_text = system_font.render("Lifes: " + str(Lifes), True,(255,255,255))
+    display_surface.blit(lifes_text, lifes_text_rect)
+    points_text = system_font.render("Points: " + str(Points), True,(255,255,255))
+    display_surface.blit(points_text, points_text_rect)
+
 #Draw tiles
     main_tile_group.draw(display_surface)
     main_tile_group.update()
@@ -933,7 +980,7 @@ while running:
     for i in range(len(tile_map)):
         for j in range(len(tile_map[i])):
             if tile_map[i][j] == 11:
-               if random.randint(1,1000) == random_number and Enemies < 10:
+               if random.randint(1,1000) == random_number and Enemies <= 5:
                   my_portal = Portal(j*24,i*24 + 24)
                   portal_group.add(my_portal)
                   if random.randint(1,2) == random.randint(1,2):
@@ -946,7 +993,7 @@ while running:
                      Enemies +=1
             
             elif tile_map[i][j] == 12:
-               if random.randint(1,1000) == random_number and Enemies < 10:
+               if random.randint(1,1000) == random_number and Enemies <= 5:
                   my_portal = Portal(j*24,i*24 + 24)
                   portal_group.add(my_portal)
                   my_skeleton = Skeleton(650, 108, ground_tile_group)
@@ -954,7 +1001,7 @@ while running:
                   Enemies +=1
 
             elif tile_map[i][j] == 13:
-               if random.randint(1,1000) == random_number and Enemies < 10:
+               if random.randint(1,1000) == random_number and Enemies <= 5:
                   my_portal = Portal(j*24,i*24 + 24)
                   portal_group.add(my_portal)
                   my_goblin = Goblin(-60, 337, ground_tile_group)
@@ -962,7 +1009,7 @@ while running:
                   Enemies +=1
 
             elif tile_map[i][j] == 14:
-               if random.randint(1,1000) == random_number and Enemies < 10:
+               if random.randint(1,1000) == random_number and Enemies <= 5:
                   my_portal = Portal(j*24,i*24 + 24)
                   portal_group.add(my_portal)
                   if random.randint(1,2) == random.randint(1,2):
@@ -974,12 +1021,43 @@ while running:
                      enemies_group.add(my_skeleton)
                      Enemies +=1
 
+    # Check for gameover
+    if Lifes <= 0:
+        display_surface.fill((0,0,0))
+        display_surface.blit(GameOver_text, Gameover_text_rect)
+        display_surface.blit(sub_text, sub_text_rect)
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+               if event.key == pygame.K_SPACE:
+                  enemies_group.empty()
+                  Points = 0
+                  Enemies = 0
+                  my_player.position.x = 320
+                  my_player.position.y = 40
+                  Lifes = 20
+            if event.type == pygame.QUIT:
+                running = False
 
-    if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_x = event.pos[0]
-            mouse_y = event.pos[1]
-            print(mouse_x, mouse_y)
-
+    #Check to see if the game has started              
+    if Game_Started == False:
+       cover_image = pygame.transform.scale(pygame.image.load("Graphics/Knight_Game/Portada/Portada.png"),(720,480))
+       cover_rect = cover_image.get_rect()
+       cover_rect.topleft = (0, 0)
+       display_surface.blit(cover_image, cover_rect)
+       display_surface.blit(title_text, title_text_rect)
+       display_surface.blit(sub_text2, sub_text2_rect)
+       for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+               if event.key == pygame.K_SPACE:
+                   Game_Started = True
+                   enemies_group.empty()
+                   Points = 0
+                   Enemies = 0
+                   my_player.position.x = 320
+                   my_player.position.y = 40
+                   Lifes = 20
+            if event.type == pygame.QUIT:
+                   running = False
   
 #Tick the clock
     pygame.display.update()
